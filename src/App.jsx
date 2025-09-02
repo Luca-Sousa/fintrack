@@ -1,3 +1,5 @@
+import { Button } from './components/ui/button';
+
 const App = () => {
   return (
     <div>
@@ -5,6 +7,8 @@ const App = () => {
       <p className="mt-2 text-lg text-red-900">
         Your one-stop solution for financial tracking.
       </p>
+
+      <Button>Get Started</Button>
     </div>
   );
 };
