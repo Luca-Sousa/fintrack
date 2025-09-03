@@ -1,4 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
+import { z } from 'zod';
 
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
@@ -11,51 +14,184 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+const signupSchema = z.object({
+  firstName: z.string().trim().min(1, {
+    message: 'O nome é obrigatório',
+  }),
+  lastName: z.string().trim().min(1, {
+    message: 'O sobrenome é obrigatório',
+  }),
+  email: z
+    .string()
+    .email({
+      message: 'O e-mail é inválido',
+    })
+    .trim()
+    .min(1, {
+      message: 'O e-mail é obrigatório',
+    }),
+  password: z.string().trim().min(6, {
+    message: 'A senha deve ter pelo menos 6 caracteres',
+  }),
+  passwordConfirmation: z.string().trim().min(6, {
+    message: 'A confirmação da senha é obrigatória',
+  }),
+  terms: z.boolean().refine((value) => value === true, {
+    message: 'Você precisa aceitar os termos',
+  }),
+});
 
 const SignupPage = () => {
+  const methods = useForm({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
+      terms: false,
+    },
+  });
+
+  const handleSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-3">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-4xl font-bold">Crie a sua conta</CardTitle>
-          <CardDescription className="text-base font-semibold">
-            Insira os seus dados abaixo.
-          </CardDescription>
-        </CardHeader>
+      <Form {...methods}>
+        <form onSubmit={methods.handleSubmit(handleSubmit)}>
+          <Card className="w-full max-w-lg">
+            <CardHeader className="text-center">
+              <CardTitle className="text-4xl font-bold">
+                Crie a sua conta
+              </CardTitle>
+              <CardDescription className="text-base font-semibold">
+                Insira os seus dados abaixo.
+              </CardDescription>
+            </CardHeader>
 
-        <CardContent className="space-y-4">
-          <div className="flex gap-4">
-            <Input placeholder="Digite seu nome" className="basis-1/2" />
-            <Input placeholder="Digite seu sobrenome" className="basis-1/2" />
-          </div>
+            <CardContent className="space-y-4">
+              <div className="flex gap-4">
+                <FormField
+                  control={methods.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem className="basis-1/2">
+                      <FormLabel>Nome</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite seu nome" {...field} />
+                      </FormControl>
 
-          <Input placeholder="Digite seu e-mail" />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <PasswordInput />
-          <PasswordInput placeholder="Confirme sua senha" />
+                <FormField
+                  control={methods.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem className="basis-1/2">
+                      <FormLabel>Sobrenome</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite seu sobrenome" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="flex items-start gap-3">
-            <Checkbox id="terms1" defaultChecked />
-            <Label
-              htmlFor="terms1"
-              className="text-xs text-muted-foreground opacity-75"
-            >
-              Ao clicar em &quot;Criar conta&quot;, você aceita{' '}
-              <a href="#" className="text-white underline">
-                nosso termo de uso e política de privacidade
-              </a>
-            </Label>
-          </div>
-        </CardContent>
+              <FormField
+                control={methods.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Digite seu e-mail" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <CardFooter>
-          <Button type="submit" className="w-full">
-            Criar conta
-          </Button>
-        </CardFooter>
-      </Card>
+              <FormField
+                control={methods.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Senha</FormLabel>
+                    <FormControl>
+                      <PasswordInput {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={methods.control}
+                name="passwordConfirmation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirme sua senha</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        placeholder="Confirme sua senha"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={methods.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-start gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel className="text-xs text-muted-foreground opacity-75">
+                        Ao clicar em &quot;Criar conta&quot;, você aceita{' '}
+                        <a href="#" className="text-white underline">
+                          nosso termo de uso e política de privacidade
+                        </a>
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+
+            <CardFooter>
+              <Button type="submit" className="w-full">
+                Criar conta
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
+      </Form>
 
       <div className="flex items-center justify-center">
         <p className="text-center opacity-50">Já possui uma conta? </p>
