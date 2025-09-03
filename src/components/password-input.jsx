@@ -18,6 +18,7 @@ const PasswordInput = forwardRef(
         />
 
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           className="absolute bottom-0 right-0 top-0 my-auto mr-2 size-8 text-muted-foreground"
