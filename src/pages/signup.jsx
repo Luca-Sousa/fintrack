@@ -122,7 +122,8 @@ const SignupPage = () => {
 
         toast.success('Conta criada com sucesso!');
       },
-      onError: () => {
+      onError: (error) => {
+        console.error('Signup error:', error);
         toast.error('Erro ao criar conta. Por favor, tente novamente.');
       },
     });
