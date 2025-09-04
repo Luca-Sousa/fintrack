@@ -6,7 +6,6 @@ import {
   LOCAL_STORAGE_ACCESS_TOKEN,
   LOCAL_STORAGE_REFRESH_TOKEN,
 } from '@/constants/local-storage';
-import { protectedApi } from '@/lib/axios';
 import { UserService } from '@/services/user';
 
 export const AuthContext = createContext({
@@ -57,8 +56,8 @@ export const AuthContextProvider = ({ children }) => {
         const refreshToken = localStorage.getItem(LOCAL_STORAGE_REFRESH_TOKEN);
         if (!accessToken && !refreshToken) return;
 
-        const response = await protectedApi.get('/users/me');
-        setUser(response.data);
+        const response = await UserService.me();
+        setUser(response);
       } catch (error) {
         setUser(null);
         console.error('Error retrieving tokens from localStorage:', error);
