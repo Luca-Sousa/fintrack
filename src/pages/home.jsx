@@ -11,7 +11,7 @@ const HomePage = () => {
   return (
     <div>
       <h1>
-        Olá, {user.first_name} {user.last_name}!
+        Olá, {user.firstName} {user.lastName}!
       </h1>
       <p>Seu e-mail é: {user.email}</p>
       <Button onClick={signOut}>Sair</Button>
