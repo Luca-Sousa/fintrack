@@ -10,7 +10,10 @@ const HomePage = () => {
 
   return (
     <div>
-      <h1>Olá, {user.name}!</h1>
+      <h1>
+        Olá, {user.firstName} {user.lastName}!
+      </h1>
+      <p>Seu e-mail é: {user.email}</p>
       <Button onClick={signOut}>Sair</Button>
     </div>
   );
